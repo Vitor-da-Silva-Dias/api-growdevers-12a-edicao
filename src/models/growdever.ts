@@ -19,6 +19,10 @@ export class Growdever {
         return this._idade;
     }
 
+    public set idade(idade: number) {
+        this._idade = idade;
+    }
+
     public toJson() {
         return {
             id: this._id,
