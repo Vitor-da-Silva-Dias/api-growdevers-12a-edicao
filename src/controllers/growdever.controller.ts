@@ -5,23 +5,9 @@ import { Request, Response } from "express";
 export class GrowdeverController {
     public create(req: Request, res: Response) {
         try {
-            const { nome, idade } = req.body;
+            const { nome, idade, cpf } = req.body;
 
-            if (!nome) {
-                return res.status(400).send({
-                    ok: false,
-                    message: "Nome was not provided",
-                });
-            }
-
-            if (!idade) {
-                return res.status(400).send({
-                    ok: false,
-                    message: "Idade was not provided",
-                });
-            }
-
-            const growdever = new Growdever(nome, idade);
+            const growdever = new Growdever(nome, idade, cpf);
             growdevers.push(growdever);
 
             return res.status(201).send({
@@ -86,7 +72,7 @@ export class GrowdeverController {
             return res.status(200).send({
                 ok: true,
                 message: "Growdever was successfully updated",
-                data: growdever.toJson(),
+                data: growdever,
             });
         } catch (error: any) {
             return res.status(500).send({

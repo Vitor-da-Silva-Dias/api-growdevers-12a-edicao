@@ -5,6 +5,7 @@
     "main": "index.js",
     "scripts": {
         "dev": "ts-node-dev --respawn --cls --transpile-only ./src/index.ts",
+        "dev:debug": "ts-node-dev --inspect --respawn --cls --transpile-only ./src/index.ts",
         "build": "tsc"
     },
     "keywords": [],
@@ -18,6 +19,7 @@
         "typescript": "^5.0.4"
     },
     "dependencies": {
+        "cpf-cnpj-validator": "^1.0.3",
         "express": "^4.18.2",
         "uuid": "^9.0.0"
     }

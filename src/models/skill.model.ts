@@ -11,6 +11,14 @@ export class Skill {
         return this._id;
     }
 
+    public set nome(nome: string) {
+        this._nome = nome;
+    }
+
+    public set isActive(isActive: boolean) {
+        this._isActive = isActive;
+    }
+
     public toJson() {
         return {
             id: this._id,

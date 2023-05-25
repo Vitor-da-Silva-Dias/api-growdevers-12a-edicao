@@ -1,6 +1,8 @@
 import { Router } from "express";
 import { GrowdeverController } from "../controllers/growdever.controller";
 import { skillRoutes } from "./skill.routes";
+import { GrowdeverMidlleware } from "../middlewares/growdever.middleware";
+import { CpfMiddleware } from "../middlewares/cpf.middleware";
 
 //   /growdever
 export const growdeverRoutes = () => {
@@ -8,7 +10,15 @@ export const growdeverRoutes = () => {
 
     app.get("/", new GrowdeverController().list);
     app.get("/:id", new GrowdeverController().get);
-    app.post("/", new GrowdeverController().create);
+    app.post(
+        "/",
+        [
+            GrowdeverMidlleware.validateCreateFields,
+            CpfMiddleware.validateCpf,
+            GrowdeverMidlleware.validateCpfAlreadyExists,
+        ],
+        new GrowdeverController().create
+    );
     app.delete("/:id", new GrowdeverController().delete);
     app.put("/:id", new GrowdeverController().update);
 

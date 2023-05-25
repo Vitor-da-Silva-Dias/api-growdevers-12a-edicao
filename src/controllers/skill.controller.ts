@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { growdevers } from "../database/growdevers";
 import { Skill } from "../models/skill.model";
+import { ApiResponse } from "../util/http-response.adapter";
 
 export class SkillController {
     public list(req: Request, res: Response) {
@@ -11,10 +12,7 @@ export class SkillController {
                 (growdever) => growdever.id === id
             );
             if (!growdever) {
-                return res.status(404).send({
-                    ok: false,
-                    message: "Growdever was not found",
-                });
+                return ApiResponse.notFound(res, "Growdever");
             }
 
             return res.status(200).send({
@@ -35,28 +33,11 @@ export class SkillController {
             const { id } = req.params;
             const { nome, isActive } = req.body;
 
-            if (!nome) {
-                return res.status(400).send({
-                    ok: false,
-                    message: "Nome was not provided",
-                });
-            }
-
-            if (!isActive) {
-                return res.status(400).send({
-                    ok: false,
-                    message: "isActive was not provided",
-                });
-            }
-
             const growdever = growdevers.find(
                 (growdever) => growdever.id === id
             );
             if (!growdever) {
-                return res.status(404).send({
-                    ok: false,
-                    message: "Growdever was not found",
-                });
+                return ApiResponse.notFound(res, "Growdever");
             }
 
             const skill = new Skill(nome, isActive);
@@ -84,20 +65,14 @@ export class SkillController {
                 (growdever) => growdever.id === id
             );
             if (!growdever) {
-                return res.status(404).send({
-                    ok: false,
-                    message: "Growdever was not found",
-                });
+                return ApiResponse.notFound(res, "Growdever");
             }
 
             const skillIndex = growdever.skills.findIndex(
                 (skill) => skill.id === skillId
             );
             if (skillIndex < 0) {
-                return res.status(404).send({
-                    ok: false,
-                    message: "Skill was not found",
-                });
+                return ApiResponse.notFound(res, "Skill");
             }
 
             const deletedSkills = growdever.skills.splice(skillIndex, 1);
@@ -113,6 +88,43 @@ export class SkillController {
                 message:
                     "Nossos servidores estão com problema, tente novamente mais tarde.",
             });
+        }
+    }
+
+    public update(req: Request, res: Response) {
+        try {
+            const { id, skillId } = req.params;
+            const { nome, isActive } = req.body;
+
+            const growdever = growdevers.find(
+                (growdever) => growdever.id === id
+            );
+            if (!growdever) {
+                return ApiResponse.notFound(res, "Growdever");
+            }
+
+            const skill = growdever.skills.find(
+                (skill) => skill.id === skillId
+            );
+            if (!skill) {
+                return ApiResponse.notFound(res, "Skill");
+            }
+
+            if (nome) {
+                skill.nome = nome;
+            }
+
+            if (isActive !== undefined) {
+                skill.isActive = Boolean(isActive);
+            }
+
+            return ApiResponse.success(
+                res,
+                "Skill was successfully updated",
+                skill
+            );
+        } catch (error: any) {
+            return ApiResponse.serverError(res, error);
         }
     }
 }
